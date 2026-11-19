@@ -1,0 +1,27 @@
+# Segredos e chaves de API (nunca versionar)
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+secrets/
+credenciais*.json
+
+# Python e notebooks (não entram na Sprint 01)
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+*.ipynb
+venv/
+.venv/
+env/
+
+# Bancos vetoriais gerados localmente
+chroma_db/
+*.faiss
+
+# Sistema operacional e editores
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
