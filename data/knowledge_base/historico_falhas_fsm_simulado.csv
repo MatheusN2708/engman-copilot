@@ -1,0 +1,60 @@
+id_registro,tag,data_abertura,sintoma,causa_identificada,tipo_intervencao,tempo_reparo_h,peca_trocada,condicao_ambiental,reincidencia_90d,origem
+FSM-2024-0001,CFTV-R200-K025-S,2024-11-26,imagem desfocada,foco perdido por vibracao,corretiva,1.6,nenhuma (ajuste de foco),vento forte,nao,SIMULADO
+FSM-2024-0002,CBX-R200-K027-S,2024-11-27,chamada chega sem localizacao,falha no modulo de geolocalizacao,corretiva,1.5,modulo GPS,tempo bom,nao,SIMULADO
+FSM-2024-0003,PMV-R100-K425-N,2024-12-04,pixel apagado,modulo de LED queimado,corretiva,1.6,modulo de LED (1 un),tempo bom,nao,SIMULADO
+FSM-2025-0004,CBX-R200-K015-N,2025-01-15,botao sem resposta,botao travado por sujeira,corretiva,0.5,nenhuma (limpeza do botao),periodo seco com poeira,nao,SIMULADO
+FSM-2025-0005,CBX-R100-K419-N,2025-01-26,chamada chega sem localizacao,falha no modulo de geolocalizacao,corretiva,2.1,modulo GPS,tempo bom,nao,SIMULADO
+FSM-2025-0006,PMV-R200-K031-N,2025-05-19,pixel apagado,modulo de LED queimado,corretiva,2.2,modulo de LED (1 un),tempo bom,nao,SIMULADO
+FSM-2025-0007,CFTV-R100-K392-N,2025-07-04,camera nao obedece comando PTZ,falha no motor de giro,corretiva,3.0,modulo de giro PTZ,tempo bom,nao,SIMULADO
+FSM-2025-0008,CBX-R100-K391-S,2025-07-12,audio unidirecional,alto-falante danificado,corretiva,1.1,alto-falante,periodo chuvoso,nao,SIMULADO
+FSM-2025-0009,CFTV-R200-K012-N,2025-07-23,imagem desfocada,foco perdido por vibracao,corretiva,1.8,nenhuma (ajuste de foco),tempo bom,nao,SIMULADO
+FSM-2025-0010,CFTV-R100-K392-N,2025-08-22,imagem degradada sem perda de link,lente com barro e fuligem,corretiva,1.4,nenhuma,periodo seco com poeira,nao,SIMULADO
+FSM-2025-0011,CBX-R100-K401-N,2025-09-17,botao sem resposta,bateria de backup degradada,corretiva,2.2,bateria de backup,semana nublada,nao,SIMULADO
+FSM-2025-0012,CFTV-R100-K404-N,2025-10-23,sem imagem no CCO,perda de link de fibra no switch de campo,corretiva,4.0,conector optico,apos chuva,nao,SIMULADO
+FSM-2025-0013,PMV-R100-K425-N,2025-11-04,brilho irregular,sensor de luminosidade sujo,inspecao,1.2,nenhuma,periodo seco com poeira,nao,SIMULADO
+FSM-2025-0014,CFTV-R100-K412-N,2025-11-08,"imagem noturna esbranquicada, perda de contraste",teia de aranha na frente da lente refletindo o infravermelho,corretiva,1.5,nenhuma,noite seca e quente,nao,SIMULADO
+FSM-2025-0015,CFTV-R100-K427-S,2025-11-13,imagem com manchas,ninho de inseto na caixa de protecao,corretiva,1.3,nenhuma,periodo quente,nao,SIMULADO
+FSM-2025-0016,PMV-R100-K410-S,2025-11-20,faixa de pixels apagada na linha 3,modulo de LED queimado,corretiva,2.0,modulo de LED (1 un),tempo bom,nao,SIMULADO
+FSM-2025-0017,CBX-R200-K015-N,2025-11-21,audio unidirecional,alto-falante danificado,corretiva,1.0,alto-falante,periodo chuvoso,nao,SIMULADO
+FSM-2025-0018,CFTV-R100-K415-N,2025-12-02,imagem tremida com vento,fixacao do suporte da camera frouxa,corretiva,3.0,abracadeira do suporte,vento forte,nao,SIMULADO
+FSM-2025-0019,CBX-R100-K413-S,2025-12-10,botao sem resposta a noite,bateria de backup descarregada (painel solar sujo),corretiva,2.0,nenhuma (limpeza do painel solar),semana nublada,nao,SIMULADO
+FSM-2025-0020,PMV-R100-K395-N,2025-12-17,brilho irregular,sensor de luminosidade sujo,inspecao,1.0,nenhuma,periodo seco com poeira,nao,SIMULADO
+FSM-2026-0021,PMV-R200-K020-S,2026-01-10,mensagem travada,falha de comunicacao com o CCO,corretiva,2.7,nenhuma (reinicio do controlador),apos chuva,nao,SIMULADO
+FSM-2026-0022,CFTV-R100-K412-N,2026-01-22,"perda de imagem a noite (tela branca), normal de dia",teia de aranha na frente da lente refletindo o infravermelho,corretiva,1.2,nenhuma,noite umida,sim,SIMULADO
+FSM-2026-0023,PMV-R200-K031-N,2026-02-04,mensagem travada,falha de comunicacao com o CCO,corretiva,2.8,nenhuma (reinicio do controlador),tempo bom,nao,SIMULADO
+FSM-2026-0024,PMV-R100-K410-S,2026-02-05,"mensagem travada, CCO sem comunicacao",switch de comunicacao travado,corretiva,1.0,nenhuma (reinicio do switch),tempo bom,nao,SIMULADO
+FSM-2026-0025,PMV-R200-K008-N,2026-02-12,painel apagado,falta de energia no ponto de alimentacao,corretiva,3.8,nenhuma (acionada concessionaria de energia),apos temporal,nao,SIMULADO
+FSM-2026-0026,CFTV-R100-K415-N,2026-02-19,imagem desfocada,foco perdido por vibracao do poste,corretiva,1.5,nenhuma (ajuste de foco),tempo bom,nao,SIMULADO
+FSM-2026-0027,PMV-R100-K440-S,2026-02-21,brilho irregular,sensor de luminosidade sujo,inspecao,1.0,nenhuma,periodo seco com poeira,nao,SIMULADO
+FSM-2026-0028,PMV-R100-K375-S,2026-02-25,brilho irregular,sensor de luminosidade sujo,inspecao,0.9,nenhuma,periodo seco com poeira,nao,SIMULADO
+FSM-2026-0029,CBX-R100-K413-S,2026-03-04,botao sem resposta,bateria de backup degradada,corretiva,2.5,bateria de backup,tempo bom,nao,SIMULADO
+FSM-2026-0030,CFTV-R100-K398-S,2026-03-18,imagem com manchas,ninho de inseto na caixa de protecao,corretiva,1.5,nenhuma,periodo quente,nao,SIMULADO
+FSM-2026-0031,CFTV-R100-K380-N,2026-03-30,sem imagem no CCO,perda de link de fibra no switch de campo,corretiva,3.9,conector optico,tempo bom,nao,SIMULADO
+FSM-2026-0032,CFTV-R100-K412-N,2026-03-30,imagem degradada de dia e de noite,lente com barro e fuligem apos chuva forte,corretiva,1.0,nenhuma,apos chuva forte,nao,SIMULADO
+FSM-2026-0033,CBX-R100-K431-S,2026-04-04,chamada chega sem localizacao,falha no modulo de geolocalizacao,corretiva,2.1,modulo GPS,tempo bom,nao,SIMULADO
+FSM-2026-0034,CFTV-R100-K404-N,2026-04-10,camera nao obedece comando PTZ,falha no motor de giro,corretiva,4.3,modulo de giro PTZ,tempo bom,nao,SIMULADO
+FSM-2026-0035,PMV-R100-K410-S,2026-04-17,dois modulos apagados apos temporal,surto eletrico queimou modulos de LED e o DPS,corretiva,3.0,modulo de LED (2 un) e DPS,apos temporal com raios,nao,SIMULADO
+FSM-2026-0036,CFTV-R100-K409-S,2026-05-05,imagem desfocada,foco perdido por vibracao,corretiva,1.3,nenhuma (ajuste de foco),tempo bom,nao,SIMULADO
+FSM-2026-0037,CBX-R100-K419-N,2026-05-13,audio unidirecional,alto-falante danificado,corretiva,1.2,alto-falante,periodo chuvoso,nao,SIMULADO
+FSM-2026-0038,CFTV-R100-K412-N,2026-05-14,"imagem noturna escura, sem iluminacao infravermelha",iluminador infravermelho queimado,corretiva,2.5,iluminador infravermelho,tempo seco,nao,SIMULADO
+FSM-2026-0039,PMV-R100-K440-S,2026-05-26,brilho irregular,sensor de luminosidade sujo,inspecao,1.1,nenhuma,periodo seco com poeira,nao,SIMULADO
+FSM-2026-0040,PMV-R100-K395-N,2026-05-28,painel apagado,falta de energia no ponto de alimentacao,corretiva,2.8,nenhuma (acionada concessionaria de energia),apos temporal,nao,SIMULADO
+FSM-2026-0041,CFTV-R100-K415-N,2026-06-11,imagem tremida e desfocada na passagem de caminhoes,vibracao do poste causada por veiculos pesados na ponte,inspecao,2.0,nenhuma,tempo bom,nao,SIMULADO
+FSM-2026-0042,CBX-R100-K383-N,2026-06-18,botao sem resposta,botao travado por sujeira,corretiva,0.8,nenhuma (limpeza do botao),periodo seco com poeira,nao,SIMULADO
+FSM-2026-0043,CBX-R100-K413-S,2026-06-22,audio unidirecional: CCO nao ouve o usuario,microfone com umidade,corretiva,1.5,microfone,periodo chuvoso,nao,SIMULADO
+FSM-2026-0044,CFTV-R100-K433-N,2026-06-23,camera nao obedece comando PTZ,falha no motor de giro,corretiva,4.1,modulo de giro PTZ,tempo bom,nao,SIMULADO
+FSM-2026-0045,CFTV-R200-K012-N,2026-07-08,imagem desfocada,foco perdido por vibracao,corretiva,1.9,nenhuma (ajuste de foco),tempo bom,nao,SIMULADO
+FSM-2026-0046,PMV-R100-K410-S,2026-07-28,cerca de 3% dos pixels apagados,desgaste dos LEDs por idade do painel,inspecao,1.5,nenhuma,tempo bom,nao,SIMULADO
+FSM-2026-0047,CFTV-R100-K385-S,2026-07-30,imagem desfocada,foco perdido por vibracao,corretiva,1.6,nenhuma (ajuste de foco),tempo bom,nao,SIMULADO
+FSM-2026-0048,CFTV-R100-K412-N,2026-08-03,"imagem branca a noite, intermitente",teia de aranha na frente da lente refletindo o infravermelho,corretiva,1.3,nenhuma,noite seca,nao,SIMULADO
+FSM-2026-0049,PMV-R100-K375-S,2026-08-04,pixel apagado,modulo de LED queimado,corretiva,2.2,modulo de LED (1 un),tempo bom,nao,SIMULADO
+FSM-2026-0050,PMV-R200-K020-S,2026-08-27,pixel apagado,modulo de LED queimado,corretiva,1.8,modulo de LED (1 un),tempo bom,nao,SIMULADO
+FSM-2026-0051,CBX-R100-K391-S,2026-09-16,chamada chega sem localizacao,falha no modulo de geolocalizacao,corretiva,2.6,modulo GPS,tempo bom,nao,SIMULADO
+FSM-2026-0052,CFTV-R100-K415-N,2026-09-25,desfoque recorrente,fissura na base do poste aumentando a vibracao,corretiva,4.0,amortecedor de vibracao,tempo bom,nao,SIMULADO
+FSM-2026-0053,CBX-R100-K413-S,2026-09-30,botao sem resposta a noite,controlador de carga com defeito,corretiva,2.0,controlador de carga,tempo bom,nao,SIMULADO
+FSM-2026-0054,CBX-R200-K027-S,2026-10-01,chamada chega sem localizacao,falha no modulo de geolocalizacao,corretiva,2.0,modulo GPS,tempo bom,nao,SIMULADO
+FSM-2026-0055,PMV-R200-K008-N,2026-10-07,brilho irregular,sensor de luminosidade sujo,inspecao,1.1,nenhuma,periodo seco com poeira,nao,SIMULADO
+FSM-2026-0056,CFTV-R100-K412-N,2026-10-09,reflexo intermitente na imagem noturna,teia de aranha na frente da lente refletindo o infravermelho,corretiva,1.4,nenhuma,noite seca e quente,sim,SIMULADO
+FSM-2026-0057,PMV-R100-K410-S,2026-10-15,modulo de LED apagado,modulo de LED queimado,corretiva,2.0,modulo de LED (1 un),tempo bom,nao,SIMULADO
+FSM-2026-0058,CFTV-R100-K421-N,2026-10-22,imagem com manchas,ninho de inseto na caixa de protecao,corretiva,1.6,nenhuma,periodo quente,nao,SIMULADO
+FSM-2026-0059,CFTV-R200-K025-S,2026-10-23,imagem degradada sem perda de link,lente com barro e fuligem,corretiva,1.2,nenhuma,apos chuva,nao,SIMULADO
