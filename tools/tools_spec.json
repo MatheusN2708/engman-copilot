@@ -1,0 +1,225 @@
+{
+  "projeto": "EngMan Copilot",
+  "versao": "sprint1",
+  "observacao": "Contrato das tools no formato de function calling (JSON Schema). Nesta sprint nada é implementado: as tools serão mockadas na Sprint 03 lendo os arquivos SIMULADOS de /data/knowledge_base. Fonte única de verdade: catálogo e histórico só chegam ao modelo por tool (não são indexados no RAG).",
+  "convencao_de_erros": {
+    "formato": {"ok": false, "erro": {"codigo": "CODIGO", "mensagem": "texto curto em português"}},
+    "codigos": {
+      "ATIVO_NAO_ENCONTRADO": "O TAG não existe no catálogo. O assistente aplica a regra 6 (diz 'Não encontrei') e pede para conferir o TAG.",
+      "TAG_FORA_DO_ESCOPO": "O TAG existe, mas não é CFTV, PMV nem callbox. O assistente aplica a regra 5 (frase de recusa).",
+      "PARAMETRO_INVALIDO": "Parâmetro fora do formato ou do enum. O assistente corrige uma vez; se falhar de novo, pergunta ao usuário.",
+      "SEM_REGISTROS": "A consulta funcionou, mas não há registros na janela. O assistente diz que não há falhas registradas no período (isso é um FATO, não um erro).",
+      "CONFIRMACAO_AUSENTE": "abrir_ordem_servico chamada sem confirmação do usuário. A OS não é aberta (regra 9).",
+      "TIMEOUT": "A fonte não respondeu em 10 segundos. O assistente informa que não conseguiu consultar e não inventa o resultado (BORDA)."
+    },
+    "politica_de_nova_tentativa": "No máximo 1 nova tentativa automática para TIMEOUT. Nenhuma nova tentativa para os outros códigos."
+  },
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "consultar_ativo",
+        "description": "Retorna a ficha cadastral SIMULADA de um ativo (CFTV PTZ, PMV ou callbox) a partir do TAG: tipo, fabricante, modelo, rodovia, km, sentido, trecho, data de instalação, vida útil em anos, notas da matriz e criticidade (A, B ou C). Use sempre que precisar de dados do equipamento ou da criticidade para definir prioridade. Não retorna número de série. Se o TAG não existir, retorna o erro ATIVO_NAO_ENCONTRADO.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "tag": {
+              "type": "string",
+              "description": "TAG completo do ativo no formato TIPO-RODOVIA-KKM-SENTIDO, em maiúsculas. Exemplo: CFTV-R100-K412-N. Nunca invente um TAG: use o que o usuário informou ou o que veio de outra tool.",
+              "pattern": "^(CFTV|PMV|CBX)-R[0-9]{3}-K[0-9]{3}-(N|S)$"
+            }
+          },
+          "required": ["tag"],
+          "additionalProperties": false
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "consultar_historico_falhas",
+        "description": "Retorna o histórico SIMULADO de falhas do FSM para um TAG, dentro de uma janela retroativa em meses (a contar da data de referência da base). Cada registro traz: id_registro, data_abertura, sintoma, causa_identificada, tipo_intervencao, tempo_reparo_h, peca_trocada, condicao_ambiental e reincidencia_90d. Use sempre que o usuário perguntar sobre falhas passadas, reincidência, causa provável ou comportamento histórico. Se não houver falhas no período, retorna lista vazia com o aviso SEM_REGISTROS.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "tag": {
+              "type": "string",
+              "description": "TAG completo do ativo, no formato TIPO-RODOVIA-KKM-SENTIDO. Exemplo: CFTV-R100-K412-N.",
+              "pattern": "^(CFTV|PMV|CBX)-R[0-9]{3}-K[0-9]{3}-(N|S)$"
+            },
+            "janela_meses": {
+              "type": "integer",
+              "description": "Quantos meses para trás olhar. Padrão 12. Use 24 só se o usuário pedir um período maior ou se houver menos de 3 falhas em 12 meses.",
+              "default": 12,
+              "minimum": 1,
+              "maximum": 36
+            },
+            "tipo_falha": {
+              "type": "string",
+              "description": "Filtro opcional por palavra presente no sintoma ou na causa (ex.: 'teia', 'bateria', 'modulo de LED', 'comunicacao'). Deixe vazio para trazer todas as falhas."
+            }
+          },
+          "required": ["tag"],
+          "additionalProperties": false
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "abrir_ordem_servico",
+        "description": "Abre uma ordem de serviço SIMULADA e retorna o número da OS. Só pode ser chamada DEPOIS que o usuário viu o rascunho e confirmou explicitamente (regra 9 do system prompt). Sem confirmação, retorna o erro CONFIRMACAO_AUSENTE.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "tag": {
+              "type": "string",
+              "description": "TAG completo do ativo que receberá o atendimento.",
+              "pattern": "^(CFTV|PMV|CBX)-R[0-9]{3}-K[0-9]{3}-(N|S)$"
+            },
+            "tipo_intervencao": {
+              "type": "string",
+              "description": "Tipo de intervenção conforme a seção 2 do PLANO-PREV-01.",
+              "enum": ["corretiva", "preventiva", "inspecao", "cbm"]
+            },
+            "prioridade": {
+              "type": "string",
+              "description": "Prioridade conforme a MATRIZ-CRIT-01: P1 = até 4 h, P2 = até 24 h, P3 = até 7 dias, P4 = próxima preventiva.",
+              "enum": ["P1", "P2", "P3", "P4"]
+            },
+            "descricao": {
+              "type": "string",
+              "description": "Texto da OS em português: sintoma relatado, fatos do histórico com IDs FSM, hipótese marcada como hipótese, o que verificar em campo e o POP aplicável. Sem placas, nomes de terceiros ou outros dados pessoais.",
+              "minLength": 30,
+              "maxLength": 1200
+            },
+            "janela_inicio": {
+              "type": "string",
+              "format": "date-time",
+              "description": "Início da janela de atendimento no formato ISO 8601 com fuso. Exemplo: 2026-11-18T08:00:00-03:00."
+            },
+            "janela_fim": {
+              "type": "string",
+              "format": "date-time",
+              "description": "Fim da janela de atendimento no formato ISO 8601 com fuso. Precisa respeitar o prazo da prioridade (ex.: P2 = até 24 h depois do início)."
+            },
+            "confirmado_pelo_usuario": {
+              "type": "boolean",
+              "description": "Precisa ser true. Só marque true se o usuário respondeu 'confirmo' ou equivalente claro ao rascunho da OS.",
+              "const": true
+            }
+          },
+          "required": ["tag", "tipo_intervencao", "prioridade", "descricao", "janela_inicio", "janela_fim", "confirmado_pelo_usuario"],
+          "additionalProperties": false
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "consultar_procedimento",
+        "description": "Retorna o POP SIMULADO aplicável a um tipo de ativo e de intervenção, com os pré-requisitos de segurança (APR, sinalização de via, NR-10, NR-35, EPI) e o passo a passo. Use sempre que o usuário pedir 'como fazer', passo a passo ou procedimento, e também para oferecer o caminho seguro depois de uma recusa por segurança.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "tipo_ativo": {
+              "type": "string",
+              "description": "Tipo de ativo. cftv_ptz = câmera PTZ; pmv = painel de mensagem variável; callbox = totem de emergência.",
+              "enum": ["cftv_ptz", "pmv", "callbox"]
+            },
+            "tipo_intervencao": {
+              "type": "string",
+              "description": "Tipo de intervenção desejada. O retorno indica qual POP cobre esse tipo (POP-01, POP-02 ou POP-03).",
+              "enum": ["corretiva", "preventiva", "inspecao", "cbm"]
+            }
+          },
+          "required": ["tipo_ativo", "tipo_intervencao"],
+          "additionalProperties": false
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "calcular_metricas_confiabilidade",
+        "description": "Calcula, a partir do histórico SIMULADO do FSM, a taxa de falha λ (falhas por hora), o MTBF (1/λ) e a confiabilidade R(t) = e^(−λt) do modelo exponencial para um horizonte t, além da tendência (comparação entre a primeira e a segunda metade do período: 'piorando', 'estável' ou 'melhorando'), que é uma versão simplificada da ideia de RGA (crescimento da confiabilidade). Ajuste completo de LDA/Weibull fica para versões futuras. Use quando o usuário pedir taxa de falha, MTBF, R(t) ou quiser justificar mudança de periodicidade ou retrofit. Se houver menos de 3 falhas no período, retorna o alerta AMOSTRA_PEQUENA junto com os números.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "tag": {
+              "type": "string",
+              "description": "TAG completo do ativo.",
+              "pattern": "^(CFTV|PMV|CBX)-R[0-9]{3}-K[0-9]{3}-(N|S)$"
+            },
+            "periodo_meses": {
+              "type": "integer",
+              "description": "Período do histórico usado no cálculo, em meses. Use 12 se o usuário não disser outro.",
+              "minimum": 3,
+              "maximum": 36
+            },
+            "tempo_operacao_horas": {
+              "type": "number",
+              "description": "Horas de operação no período. Esses ativos funcionam 24 h por dia, então use 730 x periodo_meses (ex.: 12 meses = 8760 h), a não ser que o usuário informe paradas.",
+              "exclusiveMinimum": 0
+            },
+            "horizonte_horas": {
+              "type": "number",
+              "description": "Opcional. Tempo t para calcular R(t). Padrão 720 h (30 dias).",
+              "default": 720,
+              "exclusiveMinimum": 0
+            }
+          },
+          "required": ["tag", "periodo_meses", "tempo_operacao_horas"],
+          "additionalProperties": false
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "listar_ativos_por_criticidade",
+        "description": "Retorna um ranking SIMULADO de ativos ordenado pela pontuação da MATRIZ-CRIT-01 (maior primeiro) e, em caso de empate, pelo número de falhas nos últimos 12 meses. Cada item traz TAG, criticidade, pontuação, falhas em 12 meses e se há reincidência em 90 dias. Use quando o usuário perguntar quais ativos são mais críticos ou precisam de atenção. A ordem usa só critérios da matriz: nunca região ou praça (regra 10).",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "tipo_ativo": {
+              "type": "string",
+              "description": "Filtro opcional por tipo de ativo. Deixe vazio para todos os tipos do escopo.",
+              "enum": ["cftv_ptz", "pmv", "callbox"]
+            },
+            "limite": {
+              "type": "integer",
+              "description": "Quantidade máxima de ativos no ranking. Padrão 10.",
+              "default": 10,
+              "minimum": 1,
+              "maximum": 50
+            }
+          },
+          "required": [],
+          "additionalProperties": false
+        }
+      }
+    }
+  ],
+  "exemplos_de_retorno": {
+    "consultar_ativo": {
+      "ok": true,
+      "dados": {"tag": "CFTV-R100-K412-N", "tipo_ativo": "CFTV_PTZ", "fabricante": "Fabricante Alfa (ficticio)", "modelo": "PTZ-AX30", "rodovia": "R100", "km": 412, "sentido": "N", "trecho": "serra", "data_instalacao": "2019-03-12", "vida_util_anos": 8, "pontuacao": 7, "criticidade": "A", "origem": "SIMULADO"}
+    },
+    "consultar_historico_falhas": {
+      "ok": true,
+      "tag": "CFTV-R100-K412-N",
+      "janela_meses": 12,
+      "total": 6,
+      "registros": [
+        {"id_registro": "FSM-2026-0056", "data_abertura": "2026-10-09", "sintoma": "reflexo intermitente na imagem noturna", "causa_identificada": "teia de aranha na frente da lente refletindo o infravermelho", "tipo_intervencao": "corretiva", "tempo_reparo_h": 1.4, "peca_trocada": "nenhuma", "condicao_ambiental": "noite seca e quente", "reincidencia_90d": "sim"}
+      ],
+      "observacao": "Exemplo com 1 dos 6 registros."
+    },
+    "abrir_ordem_servico": {"ok": true, "numero_os": "OS-SIM-000123", "status": "aberta", "origem": "SIMULADO"},
+    "consultar_procedimento": {"ok": true, "pop": "POP-01", "titulo": "CFTV PTZ: limpeza de lente, remoção de teias e inspeção de fixação", "pre_requisitos": ["APR aprovada", "sinalização de via", "NR-35 e cesto aéreo", "EPI completo", "sem intervenção elétrica (NR-10)"], "passos": ["Avisar o CCO", "..."]},
+    "calcular_metricas_confiabilidade": {"ok": true, "tag": "CFTV-R100-K412-N", "periodo_meses": 12, "falhas": 6, "lambda_por_hora": 0.000685, "mtbf_horas": 1460, "horizonte_horas": 720, "r_t": 0.611, "tendencia": "estável", "alerta": null},
+    "listar_ativos_por_criticidade": {"ok": true, "itens": [{"tag": "CFTV-R100-K412-N", "criticidade": "A", "pontuacao": 7, "falhas_12m": 6, "reincidencia_90d": true}]},
+    "erro": {"ok": false, "erro": {"codigo": "ATIVO_NAO_ENCONTRADO", "mensagem": "TAG PMV-R100-K999-S não encontrado no catálogo."}}
+  }
+}
